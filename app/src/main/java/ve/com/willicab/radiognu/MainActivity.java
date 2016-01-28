@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -28,11 +29,12 @@ import java.net.URL;
 
 public class MainActivity extends Activity {
     public String url_api= "http://api.radiognu.org";
-    public TextView tvSong, tvArtist, tvDisc, tvLicense;
+    public TextView tvSong, tvArtist, tvDisc, tvLicense, tvBuffer;
+    public ProgressBar pbLoad;
     public ImageView ivCover;
     public int width, height;
     public String[] Result;
-    public ImageButton btnPlay;
+    public ImageButton btnPlay, btnStop;
 
     //Streaming
     private final static String RADIO_STATION_URL = "http://audio.radiognu.org/radiognu.ogg";
@@ -47,30 +49,58 @@ public class MainActivity extends Activity {
         tvArtist = (TextView)findViewById(R.id.tvArtist);
         tvDisc = (TextView)findViewById(R.id.tvDisc);
         tvLicense = (TextView)findViewById(R.id.tvLicense);
+        tvBuffer = (TextView)findViewById(R.id.tvBuffer);
         ivCover = (ImageView)findViewById(R.id.ivCover);
+        pbLoad = (ProgressBar)findViewById(R.id.pbLoad);
         initializeMediaPlayer();
 
         btnPlay = (ImageButton)findViewById(R.id.btnPlay);
+        btnStop = (ImageButton)findViewById(R.id.btnStop);
+
         btnPlay.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                btnPlay.setImageResource(R.drawable.icon_stop);
-                //buttonStopPlay.setEnabled(true);
-                //buttonPlay.setEnabled(false);
-
-                //playSeekBar.setVisibility(View.VISIBLE);
-
-                player.prepareAsync();
-
-                player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-
-                    public void onPrepared(MediaPlayer mp) {
-                        player.start();
-                        //buttonRecord.setEnabled(true);
-                    }
-                });
+                btnPlay.setVisibility(View.GONE);
+                pbLoad.setVisibility(View.VISIBLE);
+                try {
+                    player.prepareAsync();
+                    player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        public void onPrepared(MediaPlayer mp) {
+                            btnStop.setVisibility(View.VISIBLE);
+                            pbLoad.setVisibility(View.GONE);
+                            player.start();
+                        }
+                    });
+                } catch (IllegalStateException e) {
+                    btnStop.setVisibility(View.VISIBLE);
+                    pbLoad.setVisibility(View.GONE);
+                    player.start();
+                }
             }
         });
+        btnStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                btnPlay.setVisibility(View.VISIBLE);
+                btnStop.setVisibility(View.GONE);
 
+                player.pause();
+            }
+        });
+        player.setOnInfoListener(new MediaPlayer.OnInfoListener(){
+
+            @Override
+            public boolean onInfo(MediaPlayer mp, int what, int extra) {
+                switch (what) {
+                    case MediaPlayer.MEDIA_INFO_BUFFERING_START:
+                        tvBuffer.setVisibility(View.VISIBLE);
+                        break;
+                    case MediaPlayer.MEDIA_INFO_BUFFERING_END:
+                        tvBuffer.setVisibility(View.GONE);
+                        break;
+                }
+                return false;
+            }
+        });
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
         height = displaymetrics.heightPixels;
