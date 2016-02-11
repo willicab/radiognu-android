@@ -3,14 +3,17 @@ package ve.com.willicab.radiognu;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
 import android.util.Base64;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -25,11 +28,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
+import com.github.nkzawa.socketio.client.IO;
+import com.github.nkzawa.socketio.client.Socket;
+import com.github.nkzawa.emitter.Emitter;
+
 public class MainActivity extends Activity {
-    public String url_api= "http://api.radiognu.org";
-    public TextView tvSong, tvArtist, tvDisc, tvLicense, tvBuffer;
+    public String url_api = "http://api.radiognu.org";
+    public TextView tvSong, tvArtist, tvDisc, tvLicense, tvBuffer, tvState;
     public ProgressBar pbLoad;
     public ImageView ivCover;
     public int width, height;
@@ -37,26 +46,105 @@ public class MainActivity extends Activity {
     public ImageButton btnPlay, btnStop;
 
     //Streaming
-    private final static String RADIO_STATION_URL = "http://audio.radiognu.org/radiognu.ogg";
+    private final static String RADIO_STATION_URL = "http://audio.radiognu.org/radiognuam.ogg";
     private MediaPlayer player;
+
+    private Socket mSocket;
+    private Emitter.Listener onJoined, onError;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tvSong = (TextView)findViewById(R.id.tvSong);
-        tvArtist = (TextView)findViewById(R.id.tvArtist);
-        tvDisc = (TextView)findViewById(R.id.tvDisc);
-        tvLicense = (TextView)findViewById(R.id.tvLicense);
-        tvBuffer = (TextView)findViewById(R.id.tvBuffer);
-        ivCover = (ImageView)findViewById(R.id.ivCover);
-        pbLoad = (ProgressBar)findViewById(R.id.pbLoad);
+        tvSong = (TextView) findViewById(R.id.tvSong);
+        tvArtist = (TextView) findViewById(R.id.tvArtist);
+        tvDisc = (TextView) findViewById(R.id.tvDisc);
+        tvLicense = (TextView) findViewById(R.id.tvLicense);
+        tvBuffer = (TextView) findViewById(R.id.tvBuffer);
+        tvState = (TextView) findViewById(R.id.tvState);
+        ivCover = (ImageView) findViewById(R.id.ivCover);
+        pbLoad = (ProgressBar) findViewById(R.id.pbLoad);
         initializeMediaPlayer();
 
-        btnPlay = (ImageButton)findViewById(R.id.btnPlay);
-        btnStop = (ImageButton)findViewById(R.id.btnStop);
+        btnPlay = (ImageButton) findViewById(R.id.btnPlay);
+        btnStop = (ImageButton) findViewById(R.id.btnStop);
 
+        TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
+        tabLayout.setTabTextColors(Color.WHITE, Color.GRAY);
+        tabLayout.addTab(tabLayout.newTab().setText("Reproductor"));
+        tabLayout.addTab(tabLayout.newTab().setText("Catálogo"));
+        tabLayout.addTab(tabLayout.newTab().setText("Ajustes"));
+
+/*
+        String url = "http://flows.liquidsoap.fm";
+        IO.Options opts = new IO.Options();
+        String[] transports = {"websocket", "htmlfile", "xhr-polling", "jsonp-polling"};
+        opts.transports = transports;
+        try {
+            mSocket = IO.socket(url, opts);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        mSocket.connect();
+        mSocket.emit("join", "e710da7b9e83debd5dcb4a5455e9998caba8fca7");
+        mSocket.on("joined", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.i("Socket", "joined");
+                Log.i("Socket", (String) args[0]);
+            }
+
+        });
+        mSocket.on("error", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.i("Socket", "error");
+                Log.i("Socket", (String) args[0]);
+            }
+
+        });
+        mSocket.on("disconnect", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.i("Socket", "disconnect");
+                Log.i("Socket", (String) args[0]);
+            }
+
+        });
+        mSocket.on("reconnecting", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.i("Socket", "reconnecting");
+                //Log.i("Socket", (String) args[0]);
+            }
+
+        });
+        mSocket.on("reconnect", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.i("Socket", "reconnect");
+               //Log.i("Socket", (String) args[0]);
+            }
+
+        });
+        mSocket.on("reconnect_failed", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.i("Socket", "reconnect_failed");
+                //Log.i("Socket", (String) args[0]);
+            }
+
+        });
+        mSocket.on("e710da7b9e83debd5dcb4a5455e9998caba8fca7", new Emitter.Listener() {
+            @Override
+            public void call(Object... args) {
+                Log.i("Socket", "e710da7b9e83debd5dcb4a5455e9998caba8fca7");
+                Log.i("Socket", (String) args[0]);
+            }
+
+        });
+*/
         btnPlay.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 btnPlay.setVisibility(View.GONE);
@@ -86,7 +174,7 @@ public class MainActivity extends Activity {
                 player.pause();
             }
         });
-        player.setOnInfoListener(new MediaPlayer.OnInfoListener(){
+        player.setOnInfoListener(new MediaPlayer.OnInfoListener() {
 
             @Override
             public boolean onInfo(MediaPlayer mp, int what, int extra) {
@@ -151,6 +239,7 @@ public class MainActivity extends Activity {
                     buffer.append(line);
                 }
                 String finalJSON = buffer.toString();
+                //Log.i("RadioGNU", finalJSON);
                 JSONObject parentObject = new JSONObject(finalJSON);
                 JSONObject licenseObject = new JSONObject(parentObject.getString("license"));
 
@@ -200,6 +289,7 @@ public class MainActivity extends Activity {
             tvArtist.setText(Result[0] + " (" + Result[6] + ")");
             tvDisc.setText(Result[2] + " (" + Result[7] + ")");
             tvLicense.setText(Result[14]);
+            //Log.i("RadioGNU", Result[4]);
             byte[] decodedString = Base64.decode(Result[4].replace("data:image/png;base64,", "").replace("=", ""), Base64.DEFAULT);
             Bitmap bitMap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
             //ivCover.setImageBitmap(bitMap);
@@ -207,5 +297,3 @@ public class MainActivity extends Activity {
         }
     }
 }
-
-
