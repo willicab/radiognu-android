@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="ve.com.willicab.radiognu.MainActivity">
+
+    <!--android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="net.voidynullness.android.tabitytabs.TabLayoutActivity">
+
+    </android.support.v4.view.ViewPager-->
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivCover"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvBuffer"
+        android:textColor="#ffffff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Cargando..."
+        android:layout_margin="5dp"
+        android:visibility="visible"
+        android:background="#aa000000"
+        android:padding="3dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tvLive"
+        android:textColor="#aa0000"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:layout_alignParentRight="true"
+        android:background="#ffffff"
+        android:padding="3dp"
+        android:layout_margin="5dp"
+        android:text="En vivo"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/customborder"
+        android:id="@+id/linearLayout"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvSong"
+            android:textColor="#ffffff"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvArtist"
+            android:textColor="#ffffff"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvDisc"
+            android:textColor="#ffffff"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tvLicense"
+            android:textColor="#ffffff"/>
+
+        <ImageButton
+            android:background="#222222"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/btnPlay"
+            android:src="@drawable/icon_play"
+            android:layout_gravity="center_horizontal"/>
+
+        <ImageButton
+            android:background="#222222"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/btnStop"
+            android:src="@drawable/icon_stop"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:id="@+id/pbLoad"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"/>
+
+
+    </LinearLayout>
+
+</RelativeLayout>

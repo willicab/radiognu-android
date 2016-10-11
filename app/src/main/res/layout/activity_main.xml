@@ -1,122 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="ve.com.willicab.radiognu.MainActivity"
     android:background="#000000">
 
-    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/pager"
+    <FrameLayout
+        android:background="#000000"
+        android:id="@+id/flMain"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="net.voidynullness.android.tabitytabs.TabLayoutActivity">
+        android:layout_weight="1.0">
 
-    </android.support.v4.view.ViewPager>
-
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/ivCover"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvBuffer"
-        android:textColor="#ffffff"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:text="Buffering..."
-        android:layout_marginLeft="5dp"
-        android:layout_marginTop="5dp"
-        android:visibility="gone"
-        android:background="#aa000000"
-        android:padding="3dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tvState"
-        android:textColor="#ffffff"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:layout_alignParentBottom="true"
-        android:text=""/>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:background="@drawable/customborder"
-        android:id="@+id/linearLayout"
-        >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvSong"
-            android:textColor="#ffffff"
-            android:textSize="20dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvArtist"
-            android:textColor="#ffffff"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvDisc"
-            android:textColor="#ffffff"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tvLicense"
-            android:textColor="#ffffff"/>
-
-        <ImageButton
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:id="@+id/btnPlay"
-            android:layout_alignBottom="@+id/linearLayout"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/icon_play"
-            android:layout_gravity="center_horizontal"
-            android:background="#00000000"/>
-
-        <ProgressBar
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:id="@+id/pbLoad"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone"/>
-
-        <ImageButton
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:id="@+id/btnStop"
-            android:layout_alignBottom="@+id/linearLayout"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/icon_stop"
-            android:layout_gravity="center_horizontal"
-            android:background="#00000000"
-            android:visibility="gone"/>
-
-        <android.support.design.widget.TabLayout
-            android:layout_marginTop="5dp"
-            android:layout_alignBottom="@+id/linearLayout"
-            android:id="@+id/tabs"
+        <FrameLayout
+            android:id="@+id/flRepro"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"/>
+        <FrameLayout
+            android:visibility="invisible"
+            android:id="@+id/flCatalog"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <FrameLayout
+            android:visibility="invisible"
+            android:id="@+id/flConf"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </FrameLayout>
+    <android.support.design.widget.TabLayout
+        android:background="#111111"
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
+        android:layout_height="96dp"
+        android:layout_weight="1.0"/>
 
-    </LinearLayout>
-
-</RelativeLayout>
+</LinearLayout>
